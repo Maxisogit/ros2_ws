@@ -1,0 +1,11 @@
+.vscode/
+build/
+install/
+log/
+
+.bash_history__pycache__/
+*.pyc
+test/
+.bash_history
+__pycache__/
+*.pyc

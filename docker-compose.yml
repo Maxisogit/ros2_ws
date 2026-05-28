@@ -1,0 +1,30 @@
+services:
+  ros2_humble_student:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ros_humble_student:latest
+    container_name: ros_humble_container
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - ROS_DOMAIN_ID=30
+      - TURTLEBOT3_MODEL=burger
+    volumes:
+      # Map the student's workspace folder to the home directory in the container
+      - ./src:/home/student/ws/src
+      - ./build_ws.sh:/home/student/ws/build_ws.sh
+      - ./build:/home/student/ws/build
+      - ./install:/home/student/ws/install
+      - ./log:/home/student/ws/log
+      # Optional: Share bash history so commands persist across restarts
+      - ./.bash_history:/home/student/.bash_history
+      # X11 Socket for GUI (Gazebo/Rviz)
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    working_dir: /home/student/ws
+    stdin_open: true
+    tty: true
+    network_mode: host
+    ipc: host
+    privileged: true
+    command: /bin/bash
