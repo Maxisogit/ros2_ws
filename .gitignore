@@ -8,4 +8,7 @@ log/
 test/
 .bash_history
 __pycache__/
-*.pyc
+install/
+src/turtlebot3/
+src/turtlebot3_simulations/
+
