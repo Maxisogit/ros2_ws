@@ -33,6 +33,7 @@ setup(
             "pose_sub = my_robot_controller.pose_subscriber:main",
             "mapping = my_robot_controller.mapping:main",
             "navigation = my_robot_controller.navigation:main",
+            "av_nav = my_robot_controller.aw_navigation:main",
         ],
     },
 )

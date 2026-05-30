@@ -96,5 +96,115 @@ log/
 src/turtlebot3/
 src/turtlebot3_simulations/
 ```
+# Task 3: Autoware Ego Vehicle Autonomous Navigation
+
+For Task 3 with Autoware, if TurtleBot3 packages are present in the workspace, create COLCON_IGNORE files before building:
+```
+touch src/turtlebot3/COLCON_IGNORE
+touch src/turtlebot3_simulations/COLCON_IGNORE
+```
+This prevents TurtleBot3 packages from being built in the Autoware Docker environment.
+
+For Task 1 and Task 2, remove these files before building or running TurtleBot tasks:
+```
+rm -f src/turtlebot3/COLCON_IGNORE
+rm -f src/turtlebot3_simulations/COLCON_IGNORE
+```
+## Description
+
+Task 3 uses Autoware to navigate an Ego vehicle autonomously in the sample planning map. The custom ROS2 node publishes the initial pose, sends multiple goal poses, monitors the current vehicle position, and switches to the next goal when the current one is reached.
+
+## Required files
+
+The following files are used for Task 3:
+
+```text
+src/my_robot_controller/my_robot_controller/aw_navigation.py
+src/my_robot_controller/launch/car_nav.launch.py
+src/my_robot_controller/setup.py
+```
+
+The executable entry point in `setup.py` is:
+
+```python
+"av_nav = my_robot_controller.aw_navigation:main"
+```
+
+## Requirements
+
+Task 3 requires the Autoware Docker image and the Autoware planning map.
+
+The Docker image used for this task is:
+
+```text
+mohsen_aw:full
+```
+
+The map must be stored on the host machine at:
+
+```text
+~/autoware_map/sample-map-planning/
+```
+
+The map folder should contain files such as:
+
+```text
+lanelet2_map.osm
+map_config.yaml
+map_projector_info.yaml
+pointcloud_map.pcd
+```
+
+The map is not included in this repository.
+
+## Start the Autoware Docker container
+
+From the host Ubuntu system, allow Docker to use the display:
+
+```bash
+xhost +local:docker
+xhost +local:root
+```
+
+Start the Autoware container:
+
+```bash
+docker run -it --rm --privileged \
+--name autoware_mohsen \
+--env=DISPLAY=$DISPLAY \
+--env=QT_X11_NO_MITSHM=1 \
+--env=LIBGL_ALWAYS_SOFTWARE=1 \
+--env=LIBGL_DRI3_DISABLE=1 \
+-v /tmp/.X11-unix:/tmp/.X11-unix \
+-v $HOME/ros2_ws:/ros2_ws \
+-v $HOME/autoware_map:/autoware_map \
+--workdir /ros2_ws \
+mohsen_aw:full bash
+```
+
+## Prepare the environment inside Docker
+
+Inside the Docker container, create or check `/ros2_ws/setup.bash`:
+
+```bash
+cat > /ros2_ws/setup.bash << 'EOF'
+#!/bin/bash
+source /opt/ros/humble/setup.bash
+source /autoware/install/setup.bash
+source /ros2_ws/install/setup.bash
+```
+## Notes
+
+Do not commit generated folders, Docker image files, Autoware map files, or local build-control files:
+
+```text
+build/
+install/
+log/
+~/autoware_map/
+mohsen_aw.tar
+COLCON_IGNORE
+```
+
 
 
